@@ -5,6 +5,7 @@ app = Flask(__name__)
 
 Articles = Articles()
 
+
 @app.route('/')
 def index():
     return render_template('index.html', articles=Articles)
@@ -33,6 +34,13 @@ def register():
 @app.route('/dashboard/<user_id>')
 def dashboard(user_id):
     return render_template('dashboard.html', user_id)
+
+
+@app.route('/article/<string:article_id>')
+def display_article(article_id):
+    # Later I will add MySQL database and find article by its id.
+    article = {}
+    return render_template('article.html', article = article)
 
 
 @app.route('/add')

@@ -4,7 +4,7 @@
     <section>
         {% for article in articles %}
         <article>
-            <h3>{{article.title}}</h3>
+            <h3><a href="article/{{article.id}}">{{article.title}}</a></h3>
             <small>Posted by {{article.author}} on {{article.date}}</small>
             <p>{{article.body}}</p>
         </article>
