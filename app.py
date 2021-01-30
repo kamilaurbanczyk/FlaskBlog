@@ -1,7 +1,8 @@
-from flask import Flask, render_template, flash, redirect, url_for, session, logging
+from flask import Flask, render_template, flash, redirect, url_for, session, logging, request
 from temporary_data import Articles
 from flask_mysqldb import MySQL
 from passlib.hash import sha256_crypt
+from forms import RegisterForm
 
 app = Flask(__name__)
 
@@ -28,9 +29,12 @@ def login():
     return render_template('login.html')
 
 
-@app.route('/register')
+@app.route('/register', methods=['GET', 'POST'])
 def register():
-    return render_template('register.html')
+    form = RegisterForm(request.form)
+    if request.method == 'POST' and form.validate():
+        pass
+    return render_template('register.html', form=form)
 
 
 @app.route('/dashboard/<user_id>')
