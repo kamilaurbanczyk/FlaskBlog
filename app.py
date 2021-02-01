@@ -1,11 +1,10 @@
 from flask import Flask, render_template, flash, redirect, url_for, session, logging, request
 from temporary_data import Articles
-import sqlalchemy
-from flask_mysqldb import MySQL
 from passlib.hash import sha256_crypt
 from forms import RegisterForm
+from sqlalchemy import Integer, String, DateTime, ForeignKey, Text
 from flask_sqlalchemy import SQLAlchemy
-from database import db_session
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -13,6 +12,26 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://malami:78z433XMn@localhost/myfl
 db = SQLAlchemy(app)
 
 Articles = Articles()
+
+
+class User(db.Model):
+    __tablename__ = 'users'
+    id = db.Column(Integer, primary_key=True)
+    name = db.Column(String(50), unique=False)
+    username = db.Column(String(30), unique=True)
+    email = db.Column(String(100))
+    register_date = db.Column(DateTime)
+    articles = db.relationship('Article', backref='user', lazy=True)
+
+
+class Article(db.Model):
+    __tablename__ = 'articles'
+    id = db.Column(Integer, primary_key=True)
+    title = db.Column(String(100))
+    author = db.Column(String(30))
+    user_id = db.Column(Integer, ForeignKey('users.id'), nullable=False)
+    body = db.Column(Text)
+    date = db.Column(DateTime)
 
 
 @app.route('/')
@@ -39,7 +58,17 @@ def login():
 def register():
     form = RegisterForm(request.form)
     if request.method == 'POST' and form.validate():
-        pass
+        name = request.form['name']
+        username = request.form['username']
+        email = request.form['email']
+        password = sha256_crypt.encrypt(str(request.form['password']))
+        register_date = datetime.now()
+
+        user = User(name=name, username=username, email=email, register_date=register_date)
+        db.session.add(user)
+        db.session.commit()
+        return render_template('register.html', form=form)
+
     return render_template('register.html', form=form)
 
 
@@ -52,7 +81,7 @@ def dashboard(user_id):
 def display_article(article_id):
     # Later I will add MySQL database and find article by its id.
     article = {}
-    return render_template('article.html', article = article)
+    return render_template('article.html', article=article)
 
 
 @app.route('/add')
@@ -67,10 +96,8 @@ def edit_post():
 
 @app.teardown_appcontext
 def shutdown_session(exception=None):
-    db_session.remove()
+    pass
 
 
 if __name__ == '__main__':
     app.run(debug=True)
-
-
