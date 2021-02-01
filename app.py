@@ -3,6 +3,7 @@ from temporary_data import Articles
 from flask_mysqldb import MySQL
 from passlib.hash import sha256_crypt
 from forms import RegisterForm
+from database import db_session
 
 app = Flask(__name__)
 
@@ -58,6 +59,9 @@ def add_post():
 def edit_post():
     return render_template('edit_post.html')
 
+@app.teardown_appcontext
+def shutdown_session(exception=None):
+    db_session.remove()
 
 if __name__ == '__main__':
     app.run(debug=True)
