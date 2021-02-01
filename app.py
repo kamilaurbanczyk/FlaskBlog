@@ -1,5 +1,6 @@
 from flask import Flask, render_template, flash, redirect, url_for, session, logging, request
 from temporary_data import Articles
+import sqlalchemy
 from flask_mysqldb import MySQL
 from passlib.hash import sha256_crypt
 from forms import RegisterForm
