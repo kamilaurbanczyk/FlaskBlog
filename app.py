@@ -12,6 +12,7 @@ from flask_migrate import Migrate, MigrateCommand
 app = Flask(__name__)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://malami:78z433XMn@localhost/myflaskblog'
+app.secret_key = '_5#y2L"F4Q8z\n\xec]/'
 db = SQLAlchemy(app)
 
 # migrate = Migrate(app, db)
@@ -72,13 +73,14 @@ def register():
         password = sha256_crypt.hash(str(request.form['password']))
         register_date = datetime.now()
         if User.query.filter_by(username=username).first():
-            print("Username exists! Choose different username")
+            flash('Username exists! Choose different username')
             return render_template('register.html', form=form)
         else:
+            flash('You were successfully registered')
             user = User(name=name, username=username, email=email, password=password, register_date=register_date)
             db.session.add(user)
             db.session.commit()
-            return render_template('register.html', form=form)
+            return render_template('index.html')
 
     return render_template('register.html', form=form)
 
