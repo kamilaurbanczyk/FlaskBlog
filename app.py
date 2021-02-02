@@ -6,10 +6,17 @@ from sqlalchemy import Integer, String, DateTime, ForeignKey, Text
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
+from flask_script import Manager
+from flask_migrate import Migrate, MigrateCommand
+
 app = Flask(__name__)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://malami:78z433XMn@localhost/myflaskblog'
 db = SQLAlchemy(app)
+
+# migrate = Migrate(app, db)
+# manager = Manager(app)
+# manager.add_command('db', MigrateCommand)
 
 Articles = Articles()
 
@@ -20,6 +27,7 @@ class User(db.Model):
     name = db.Column(String(50), unique=False)
     username = db.Column(String(30), unique=True)
     email = db.Column(String(100))
+    password = db.Column(String(100))
     register_date = db.Column(DateTime)
     articles = db.relationship('Article', backref='user', lazy=True)
 
@@ -61,13 +69,16 @@ def register():
         name = request.form['name']
         username = request.form['username']
         email = request.form['email']
-        password = sha256_crypt.encrypt(str(request.form['password']))
+        password = sha256_crypt.hash(str(request.form['password']))
         register_date = datetime.now()
-
-        user = User(name=name, username=username, email=email, register_date=register_date)
-        db.session.add(user)
-        db.session.commit()
-        return render_template('register.html', form=form)
+        if User.query.filter_by(username=username).first():
+            print("Username exists! Choose different username")
+            return render_template('register.html', form=form)
+        else:
+            user = User(name=name, username=username, email=email, password=password, register_date=register_date)
+            db.session.add(user)
+            db.session.commit()
+            return render_template('register.html', form=form)
 
     return render_template('register.html', form=form)
 
