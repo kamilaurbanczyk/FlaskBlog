@@ -1,7 +1,7 @@
 from flask import Flask, render_template, flash, redirect, url_for, session, logging, request
 from temporary_data import Articles
 from passlib.hash import sha256_crypt
-from forms import RegisterForm
+from forms import RegisterForm, LoginForm
 from sqlalchemy import Integer, String, DateTime, ForeignKey, Text
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
@@ -58,9 +58,27 @@ def contact():
     return render_template('contact.html')
 
 
-@app.route('/login')
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-    return render_template('login.html')
+    form = LoginForm(request.form)
+    if request.method == 'POST' and form.validate():
+        username = request.form['username']
+        password = request.form['password']
+
+        this_user = User.query.filter_by(username=username).first()
+
+        if this_user:
+            if sha256_crypt.verify(password, this_user.password):
+                flash("You are now logged in")
+                return redirect(url_for('index'))
+            else:
+                flash('Wrong password! Try again')
+                return render_template('login.html', form=form)
+        else:
+            flash('This user not exists. Try again.')
+            return render_template('login.html', form=form)
+
+    return render_template('login.html', form=form)
 
 
 @app.route('/register', methods=['GET', 'POST'])
