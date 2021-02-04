@@ -69,6 +69,9 @@ def login():
 
         if this_user:
             if sha256_crypt.verify(password, this_user.password):
+                session['logged in'] = True
+                session['username'] = this_user.username
+                session.permanent = True
                 flash("You are now logged in")
                 return redirect(url_for('index'))
             else:
