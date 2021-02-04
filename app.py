@@ -5,6 +5,7 @@ from forms import RegisterForm, LoginForm
 from sqlalchemy import Integer, String, DateTime, ForeignKey, Text
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+from functools import wraps
 
 from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
@@ -41,6 +42,17 @@ class Article(db.Model):
     user_id = db.Column(Integer, ForeignKey('users.id'), nullable=False)
     body = db.Column(Text)
     date = db.Column(DateTime)
+
+
+def is_logged_in(my_func):
+    @wraps(my_func)
+    def wrapper(*args, **kwargs):
+        if 'username' in session:
+            return my_func(*args, **kwargs)
+        else:
+            flash('Not authenticated! Please log in.')
+            return redirect(url_for('login'))
+    return wrapper
 
 
 @app.route('/')
