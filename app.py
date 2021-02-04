@@ -83,7 +83,7 @@ def login():
             if sha256_crypt.verify(password, this_user.password):
                 session['logged in'] = True
                 session['username'] = this_user.username
-                session.permanent = True
+                session.permanent = False
                 flash("You are now logged in")
                 return redirect(url_for('index'))
             else:
@@ -97,6 +97,7 @@ def login():
 
 
 @app.route('/logout')
+@is_logged_in
 def logout():
     session.clear()
     flash('You are now logged out.')
