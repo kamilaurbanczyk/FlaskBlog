@@ -16,3 +16,8 @@ class RegisterForm(Form):
 class LoginForm(Form):
     username = StringField('Username', validators=[validators.Length(min=6, max=30)])
     password = PasswordField('Password', validators=[validators.DataRequired()])
+
+
+class ArticleForm(Form):
+    title = StringField('Title', [validators.DataRequired()])
+    body = TextAreaField('Text', [validators.DataRequired()])
