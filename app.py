@@ -1,7 +1,7 @@
 from flask import Flask, render_template, flash, redirect, url_for, session, logging, request
 from temporary_data import Articles
 from passlib.hash import sha256_crypt
-from forms import RegisterForm, LoginForm
+from forms import RegisterForm, LoginForm, ArticleForm
 from sqlalchemy import Integer, String, DateTime, ForeignKey, Text
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
@@ -138,9 +138,25 @@ def display_article(article_id):
     return render_template('article.html', article=article)
 
 
-@app.route('/add')
-def add_post():
-    return render_template('add_post.html')
+@app.route('/add', methods=['POST', 'GET'])
+@is_logged_in
+def add_article():
+    form = ArticleForm(request.form)
+    if request.method == 'POST' and form.validate():
+        title = request.form['title']
+        body = request.form['body']
+        author = session['username']
+        user_id = User.query.filter_by(username=author).first().id
+        date = datetime.now()
+
+        article = Article(title=title, body=body, author=author, user_id=user_id, date=date)
+        db.session.add(article)
+        db.session.commit()
+
+        flash("Article added successfully!")
+        return render_template('index.html')
+
+    return render_template('add_article.html', form=form)
 
 
 @app.route('/edit')
