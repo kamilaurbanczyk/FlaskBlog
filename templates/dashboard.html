@@ -1,5 +1,17 @@
 {%extends 'layout.html'%}
 
 {% block content %}
-<title>Dashboard</title>
+{% from 'includes/_formhelpers.html' import render_field%}
+<h2 style="text-align:center;">Dashboard</h2>
+<table>
+    <tr>
+        <th>User</th><td>{{user.username}}</td>
+    </tr>
+    <tr>
+        <th>Articles</th><td>{{num_articles}}</td>
+    </tr>
+    <tr>
+        <th>Register date</th><td>{{user.register_date}}</td>
+    </tr>
+</table>
 {% endblock %}
