@@ -126,9 +126,12 @@ def register():
     return render_template('register.html', form=form)
 
 
-@app.route('/dashboard/<user_id>')
-def dashboard(user_id):
-    return render_template('dashboard.html', user_id)
+@app.route('/dashboard')
+@is_logged_in
+def dashboard():
+    user = User.query.filter(User.username == session['username']).first()
+    num_articles = len(user.articles)
+    return render_template('dashboard.html', user=user, num_articles=num_articles)
 
 
 @app.route('/article/<string:article_id>')
