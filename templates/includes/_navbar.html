@@ -5,6 +5,7 @@
         <li><a href="/about">About</a></li>
         <li><a href="/contact">Contact</a>
             {% if session['logged in'] %}
+                <li><a href="/dashboard">Dashboard</a></li>
                 <li><a href="/logout">Logout</a></li>
             {% else %}
                 <li><a href="/login">Login</a></li>
