@@ -57,7 +57,8 @@ def is_logged_in(my_func):
 
 @app.route('/')
 def index():
-    return render_template('index.html', articles=Articles)
+    articles = Article.query.order_by(Article.id.desc()).limit(3)
+    return render_template('index.html', articles=articles)
 
 
 @app.route('/about')
