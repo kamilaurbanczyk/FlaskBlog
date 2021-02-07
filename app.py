@@ -131,7 +131,8 @@ def register():
 def dashboard():
     user = User.query.filter(User.username == session['username']).first()
     num_articles = len(user.articles)
-    return render_template('dashboard.html', user=user, num_articles=num_articles)
+    articles = Article.query.filter(Article.author == session['username']).all()
+    return render_template('dashboard.html', user=user, num_articles=num_articles, articles=articles)
 
 
 @app.route('/article/<string:article_id>')
