@@ -28,8 +28,10 @@
         <h1>Flask Blog</h1>
     </header>
     <main>
-        {% include 'includes/_navbar.html'%}
-        {% block content %}{% endblock %}
+        <div style="width:80%; margin-left:10%; margin-right:10%; margin-bottom:200px;">
+            {% include 'includes/_navbar.html'%}
+            {% block content %}{% endblock %}
+        </div>
         {% block footer %}{% endblock %}
     </main>
     <footer id="main-footer">
