@@ -2,16 +2,43 @@
 
 {% block content %}
 {% from 'includes/_formhelpers.html' import render_field%}
-<h2 style="text-align:center;">Dashboard</h2>
+<h2 style="text-align:center;">Dashboard</h2><hr>
+<div style="display: flex; align-items: center">
+<span style="display: inline-block; width: 400px; align-items: center">
+    <table>
+        <tr>
+            <th>User</th><td>{{user.username}}</td>
+        </tr>
+        <tr>
+            <th>Articles</th><td>{{num_articles}}</td>
+        </tr>
+        <tr>
+            <th>Register date</th><td>{{user.register_date}}</td>
+        </tr>
+    </table>
+</span>
+<span style="display: inline-block;">
+    <button type="button"><a href="{{url_for('add_article')}}">Add article</a></button>
+</span>
+</div>
+</br></br>
+<h3>All articles</h3>
 <table>
     <tr>
-        <th>User</th><td>{{user.username}}</td>
+        <th>Title</th>
+        <th>Author</th>
+        <th>Date</th>
+        <th>Edit</th>
+        <th>Delete</th>
     </tr>
+    {% for article in articles %}
     <tr>
-        <th>Articles</th><td>{{num_articles}}</td>
+        <td>{{article.title}}</td>
+        <td>{{article.author}}</td>
+        <td>{{article.date}}</td>
+        <td><button type="button"><a href="#">Edit</a></button></td>
+        <td><button type="button"><a href="#">Delete</a></button></td>
     </tr>
-    <tr>
-        <th>Register date</th><td>{{user.register_date}}</td>
-    </tr>
+    {% endfor %}
 </table>
 {% endblock %}
