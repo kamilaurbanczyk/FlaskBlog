@@ -6,21 +6,14 @@ from sqlalchemy import Integer, String, DateTime, ForeignKey, Text
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from functools import wraps
+from secrets import SECRET_KEY, DATABASE_URI
 
-from flask_script import Manager
-from flask_migrate import Migrate, MigrateCommand
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://malami:78z433XMn@localhost/myflaskblog'
-app.secret_key = '_5#y2L"F4Q8z\n\xec]/'
+app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URI
+app.secret_key = SECRET_KEY
 db = SQLAlchemy(app)
-
-# migrate = Migrate(app, db)
-# manager = Manager(app)
-# manager.add_command('db', MigrateCommand)
-
-Articles = Articles()
 
 
 class User(db.Model):
