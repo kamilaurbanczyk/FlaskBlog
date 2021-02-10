@@ -144,7 +144,7 @@ def display_article(article_id):
 
 @app.route('/all_articles')
 def display_articles_list():
-    articles = Article.query.all()
+    articles = Article.query.order_by(Article.title).all()
     return render_template('all_articles.html', articles=articles)
 
 
