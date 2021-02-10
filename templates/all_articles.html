@@ -1,0 +1,11 @@
+{% extends 'layout.html' %}
+{% block content %}
+<h2>All articles on blog:</h2>
+<table>
+    {% for article in articles %}
+    <tr>
+        <td><a href="article/{{article.id}}">{{article.title}}</a></td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

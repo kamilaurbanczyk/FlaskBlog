@@ -142,6 +142,12 @@ def display_article(article_id):
     return render_template('article.html', article=article)
 
 
+@app.route('/all_articles')
+def display_articles_list():
+    articles = Article.query.all()
+    return render_template('all_articles.html', articles=articles)
+
+
 @app.route('/add', methods=['POST', 'GET'])
 @is_logged_in
 def add_article():
