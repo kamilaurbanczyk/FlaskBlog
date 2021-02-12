@@ -162,9 +162,27 @@ def add_article():
     return render_template('add_article.html', form=form)
 
 
-@app.route('/edit')
-def edit_post():
-    return render_template('edit_post.html')
+@app.route('/edit/<string:article_id>', methods=['GET', 'POST'])
+@is_logged_in
+def edit_article(article_id):
+    article = Article.query.filter(Article.id == article_id).first()
+
+    form = ArticleForm()
+    form.title.data = article.title
+    form.body.data = article.body
+
+    if request.method == 'POST' and form.validate():
+        title = request.form['title']
+        body = request.form['body']
+
+        article.title = title
+        article.body = body
+        db.session.commit()
+
+        flash('Article was successfully updated')
+        return redirect(url_for('index'))
+
+    return render_template('edit_article.html', form=form)
 
 
 @app.teardown_appcontext

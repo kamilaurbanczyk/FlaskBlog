@@ -1,5 +1,13 @@
 {%extends 'layout.html'%}
 
 {% block content %}
-
+{% from 'includes/_formhelpers.html' import render_field%}
+<h2 style="text-align:center;">Edit article</h2><hr>
+<form method="POST" action="">
+    <ul style="list-style-type:None;">
+        <li>{{render_field(form.title)}}</li>
+        <li>{{render_field(form.body, id='editor')}}</li><br>
+        <input type="submit" text="submit" value="Submit">
+    </ul>
+</form>
 {% endblock %}
