@@ -2,5 +2,5 @@
 {% block content %}
 <h2 style="text-align:center;">{{article.title}}</h2>
 <small>Posted by {{article.author}} on {{article.date}}</small>
-<p>{{article.body}}</p>
+<p>{{article.body | safe}}</p>
 {% endblock %}
