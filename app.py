@@ -167,27 +167,44 @@ def add_article():
 def edit_article(article_id):
     article = Article.query.filter(Article.id == article_id).first()
 
-    form = ArticleForm()
-    form.title.data = article.title
-    form.body.data = article.body
+    if article.author == session['username']:
 
-    if request.method == 'POST' and form.validate():
-        title = request.form['title']
-        body = request.form['body']
+        form = ArticleForm()
+        form.title.data = article.title
+        form.body.data = article.body
 
-        article.title = title
-        article.body = body
-        db.session.commit()
+        if request.method == 'POST' and form.validate():
+            title = request.form['title']
+            body = request.form['body']
 
-        flash('Article was successfully updated')
+            article.title = title
+            article.body = body
+            db.session.commit()
+
+            flash('Article was successfully updated')
+            return redirect(url_for('index'))
+    else:
+        flash('No permission to perform action')
         return redirect(url_for('index'))
 
     return render_template('edit_article.html', form=form)
 
 
-@app.teardown_appcontext
-def shutdown_session(exception=None):
-    pass
+@app.route('/delete/<string:article_id>')
+@is_logged_in
+def delete_article(article_id):
+    article = Article.query.filter(Article.id == article_id).first()
+
+    if article.author == session['username']:
+        db.session.delete(article)
+        db.session.commit()
+
+        flash('Article was successfully deleted')
+        return redirect(url_for('index'))
+
+    else:
+        flash('No permission to perform action')
+        return redirect(url_for('index'))
 
 
 if __name__ == '__main__':
