@@ -59,8 +59,12 @@ def index():
     articles = Article.query.order_by(Article.id.desc()).limit(3)
 
     # Return only first paragraph of every article to be displayed.
+    # If no match object- Attribute Error, display whole article without changes
     for article in articles:
-        article.body = first_paragraph(article.body)
+        try:
+            article.body = first_paragraph(article.body)
+        except AttributeError:
+            continue
 
     return render_template('index.html', articles=articles)
 
