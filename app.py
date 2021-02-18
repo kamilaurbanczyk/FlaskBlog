@@ -1,5 +1,4 @@
-from flask import Flask, render_template, flash, redirect, url_for, session, logging, request
-from temporary_data import Articles
+from flask import Flask, render_template, flash, redirect, url_for, session, request
 from passlib.hash import sha256_crypt
 from forms import RegisterForm, LoginForm, ArticleForm
 from sqlalchemy import Integer, String, DateTime, ForeignKey, Text
@@ -7,6 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from functools import wraps
 from secrets import SECRET_KEY, DATABASE_URI
+import re
 
 
 app = Flask(__name__)
@@ -48,9 +48,20 @@ def is_logged_in(my_func):
     return wrapper
 
 
+def first_paragraph(text):
+    pattern = re.compile(r'<p>.*?</p>')
+    match_object = pattern.search(text)
+    return match_object.group()
+
+
 @app.route('/')
 def index():
     articles = Article.query.order_by(Article.id.desc()).limit(3)
+
+    # Return only first paragraph of every article to be displayed.
+    for article in articles:
+        article.body = first_paragraph(article.body)
+
     return render_template('index.html', articles=articles)
 
 
